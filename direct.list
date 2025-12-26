@@ -1,0 +1,10 @@
+# 自定义直连
+DOMAIN-SUFFIX,cn.bing.com
+DOMAIN-SUFFIX,amazonaws.cn
+DOMAIN-SUFFIX,amazonaws.com.cn
+DOMAIN-SUFFIX,paypal.com
+DOMAIN-SUFFIX,paypal.me
+DOMAIN-SUFFIX,paypal-mktg.com
+DOMAIN-SUFFIX,paypalobjects.com
+DOMAIN-SUFFIX,cm.steampowered.com
+DOMAIN-SUFFIX,steamserver.net
