@@ -1,0 +1,253 @@
+# 必读！！！
+# 注意规则在满足自己需求情况下，尽量做到精简，不要过度复杂，以免影响性能。
+# 跑裸核用户请自行去掉下方控制面板模块的注释。
+# 机场订阅
+proxy-providers:
+  Airport1:
+    url: "机场订阅"
+    type: http
+    interval: 86400
+    path: ./providers/proxy-provider_Airport1.yaml
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 300
+    proxy: DIRECT
+
+# 节点信息
+proxies:
+  - name: wireguard
+    type: wireguard
+    ip: 10.253.0.2
+    private-key: 7rCvVz8x8wB2Pnf0AmnO8wesCGZq8EnGLgJm1svCkBY=
+    server: wireguard.example.com
+    port: 51820
+    public-key: nzUGML/20x/uoJyNuFumpdIL0umxhzHF6onkYZrVi1w=
+    allowed-ips:
+    - 0.0.0.0/0
+    udp: true
+  
+# 全局配置 
+mixed-port: 7890
+allow-lan: true
+ipv6: true
+unified-delay: true
+log-level: silent
+profile:
+  store-selected: true
+
+# DNS模块
+dns:
+  enable: true
+  cache-algorithm: arc
+  prefer-h3: true
+  use-system-hosts: true
+  listen: :53
+  ipv6: true
+  enhanced-mode: normal
+  default-nameserver:
+  - 119.29.29.29
+  - 182.254.116.116
+  - 180.76.76.76
+  - 114.114.114.114
+  nameserver:
+  - https://doh.pub/dns-query
+  - https://dns.alidns.com/dns-query
+  fallback:
+  - https://cloudflare-dns.com/dns-query
+  - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+    - 240.0.0.0/4
+    - 2001::1/128
+    - ::1/128
+    - 221.228.32.13/32
+
+# 入站
+tun:
+  enable: false
+  stack: gvisor
+  auto-route: true
+  strict-route: false
+  auto-detect-interface: true
+  dns-hijack:
+  - any:53
+external-controller-cors:
+  allow-private-network: true
+  allow-origins:
+  - '*'
+external-controller-pipe: \\.\pipe\verge-mihomo
+
+# 出站策略。
+proxy-groups:
+  - {name: 🚀 节点选择, type: select, include-all: true, proxies: [♻️ 自动选择, 🎯 全球直连], exclude-filter: "wireguard"}
+  - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 50, interval: 300, exclude-filter: "wireguard"}
+  - {name: 🌍 国外媒体, type: select, include-all: true, proxies: [🚀 节点选择, ♻️ 自动选择, 🎯 全球直连], exclude-filter: "wireguard"}
+  - {name: 📲 电报信息, type: select, include-all: true, proxies: [🚀 节点选择, 🎯 全球直连], exclude-filter: "wireguard"}
+  - {name: Ⓜ️ 微软服务, type: select, include-all: true, proxies: [🎯 全球直连, 🚀 节点选择], exclude-filter: "wireguard"}
+  - {name: 🍎 苹果服务, type: select, include-all: true, proxies: [🚀 节点选择, 🎯 全球直连], exclude-filter: "wireguard"}
+  - {name: 🎯 全球直连, type: select, proxies: [DIRECT]}
+  - {name: 🛑 全球拦截, type: select, proxies: [REJECT, DIRECT]}
+  - {name: 🍃 应用净化, type: select, proxies: [REJECT, DIRECT]}
+  - {name: 🐟 漏网之鱼, type: select, include-all: true, proxies: [🚀 节点选择, 🎯 全球直连, ♻️ 自动选择], exclude-filter: "wireguard"}
+  - {name: 🎯 wireguard, type: select, proxies: [wireguard]}
+
+# 规则匹配
+rules:
+  - IP-CIDR,192.168.1.0/24,🎯 wireguard,no-resolve
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,proxy,🚀 节点选择
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - RULE-SET,UnBan,🎯 全球直连
+  - RULE-SET,BanAD,🛑 全球拦截
+  - RULE-SET,BanProgramAD,🍃 应用净化
+  - RULE-SET,GoogleCN,🎯 全球直连
+  - RULE-SET,SteamCN,🎯 全球直连
+  - RULE-SET,Microsoft,Ⓜ️ 微软服务
+  - RULE-SET,Apple,🍎 苹果服务
+  - RULE-SET,Telegram,📲 电报信息
+  - RULE-SET,ProxyMedia,🌍 国外媒体
+  - RULE-SET,ProxyLite,🚀 节点选择
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,Download,🎯 全球直连
+  - RULE-SET,PrivateTracker,🎯 全球直连
+  - GEOIP,CN,🎯 全球直连
+  - MATCH,🐟 漏网之鱼
+
+rule-providers:
+  direct:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/cqhtyi/Clash/refs/heads/main/direct.list"
+    path: ./providers/rule-provider_direct.yaml
+    interval: 86400
+  proxy:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/cqhtyi/Clash/refs/heads/main/proxy.list"
+    path: ./providers/rule-provider_proxy.yaml
+    interval: 86400
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list"
+    path: ./providers/rule-provider_LocalAreaNetwork.yaml
+    interval: 86400
+
+  UnBan:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list"
+    path: ./providers/rule-provider_UnBan.yaml
+    interval: 86400
+
+  BanAD:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list"
+    path: ./providers/rule-provider_BanAD.yaml
+    interval: 86400
+
+  BanProgramAD:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"
+    path: ./providers/rule-provider_BanProgramAD.yaml
+    interval: 86400
+
+  GoogleCN:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list"
+    path: ./providers/rule-provider_GoogleCN.yaml
+    interval: 86400
+
+  SteamCN:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/SteamCN.list"
+    path: ./providers/rule-provider_SteamCN.yaml
+    interval: 86400
+
+  Microsoft:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"
+    path: ./providers/rule-provider_Microsoft.yaml
+    interval: 86400
+
+  Apple:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"
+    path: ./providers/rule-provider_Apple.yaml
+    interval: 86400
+
+  Telegram:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list"
+    path: ./providers/rule-provider_Telegram.yaml
+    interval: 86400
+
+  ProxyMedia:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list"
+    path: ./providers/rule-provider_ProxyMedia.yaml
+    interval: 86400
+
+  ProxyLite:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list"
+    path: ./providers/rule-provider_ProxyLite.yaml
+    interval: 86400
+
+  ChinaDomain:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"
+    path: ./providers/rule-provider_ChinaDomain.yaml
+    interval: 86400
+    
+  ChinaCompanyIp:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list"
+    path: ./providers/rule-provider_ChinaCompanyIp.yaml
+    interval: 86400
+
+  Download:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list"
+    path: ./providers/rule-provider_Download.yaml
+    interval: 86400
+
+  PrivateTracker:
+    type: http
+    behavior: classical
+    format: text
+    url: "https://raw.githubusercontent.com/WPF0414/ACL4SSR/master/Clash/Ruleset/PrivateTracker.list"
+    path: ./providers/rule-provider_PrivateTracker.yaml
+    interval: 86400
