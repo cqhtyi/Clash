@@ -110,6 +110,7 @@ rule-providers:
     url: "https://raw.githubusercontent.com/cqhtyi/Clash/refs/heads/main/direct.list"
     path: ./providers/rule-provider_direct.yaml
     interval: 86400
+
   proxy:
     type: http
     behavior: classical
@@ -117,6 +118,7 @@ rule-providers:
     url: "https://raw.githubusercontent.com/cqhtyi/Clash/refs/heads/main/proxy.list"
     path: ./providers/rule-provider_proxy.yaml
     interval: 86400
+
   LocalAreaNetwork:
     type: http
     behavior: classical
@@ -129,7 +131,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/UnBan.list"
     path: ./providers/rule-provider_UnBan.yaml
     interval: 86400
 
@@ -153,7 +155,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/GoogleCN.list"
     path: ./providers/rule-provider_GoogleCN.yaml
     interval: 86400
 
@@ -169,7 +171,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Microsoft.list"
     path: ./providers/rule-provider_Microsoft.yaml
     interval: 86400
 
@@ -177,7 +179,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Apple.list"
     path: ./providers/rule-provider_Apple.yaml
     interval: 86400
 
@@ -185,7 +187,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Telegram.list"
     path: ./providers/rule-provider_Telegram.yaml
     interval: 86400
 
@@ -225,7 +227,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list"
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Download.list"
     path: ./providers/rule-provider_Download.yaml
     interval: 86400
 
